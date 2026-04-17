@@ -8,7 +8,7 @@ readme = "README.md"
 license = "MIT OR Apache-2.0"
 keywords = ["hash", "checksum", "obsidian", "data-integrity"]
 categories = ["algorithms"]
-repository = "https://github.com/Yeixse/Obsidian-512"
+repository = "https://github.com/Yeixse/obsidian-512"
 
 [profile.release]
 opt-level = 3

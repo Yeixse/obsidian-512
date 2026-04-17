@@ -5,7 +5,6 @@ use std::fmt::Write;
 pub struct Obsidian512;
 
 impl Obsidian512 {
-    
     pub fn hash_file(path: &str) -> io::Result<String> {
         let bytes = fs::read(path)?;
         Ok(Self::calculate_hash(&bytes))
@@ -24,7 +23,7 @@ impl Obsidian512 {
         Ok(Self::calculate_hash(bytes))
     }
 
-    fn calculate_hash(bytes: &[u8]) -> String {
+    pub fn calculate_hash(bytes: &[u8]) -> String {
         const K: [u32; 8] = [
             0xB7E15162, 0x243F6A88, 0x9E3779B9, 0x61C88647,
             0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xCA62C1D6,
@@ -38,7 +37,7 @@ impl Obsidian512 {
         }
         padded_bytes.extend_from_slice(&inp_len.to_be_bytes());
 
-        let state_data: Vec<u32> = padded_bytes
+        let mut state_data: Vec<u32> = padded_bytes
             .chunks_exact(4)
             .map(|chunk| u32::from_be_bytes(chunk.try_into().unwrap()))
             .collect();
@@ -50,20 +49,20 @@ impl Obsidian512 {
 
         for _i in 0..128 {
             let i_u32 = _i as u32;
-            for _val in 0..&state_data.len() {
-                let mut s1 = state[j];
+            for j in 0..state_data.len() {
+                let mut s1 = state_data[j];
                 s1 = s1.wrapping_add(h[j % 8]).rotate_left(7);
-                s1 ^= (h[(j + 1) % 8] ^ i_u32).wrapping_mul(0x85ebca6b);
+                s1 ^= (h[(j + 1) % 8] ^ i_u32).wrapping_mul(0x85ebca6b);            
                 let ch = (h[0] & h[1]) ^ (!h[0] & h[2]);
-                let maj = (h[3] & h[4]) ^ (h[3] & h[5]) ^ (h[4] & h[5]);
+                let maj = (h[3] & h[4]) ^ (h[3] & h[5]) ^ (h[4] & h[5]);          
                 s1 = s1.wrapping_add(ch).wrapping_add(maj).wrapping_add(K[j % 8]);
                 let rot_amt = (s1.count_ones() & 31) as u32;
-                s1 = s1.rotate_right(rot_amt) ^ h[i % 8];
+                s1 = s1.rotate_right(rot_amt) ^ h[_i % 8];
                 let temp = h[7].wrapping_add(s1);
                 h[7] = h[6]; h[6] = h[5]; h[5] = h[4].wrapping_add(temp);
                 h[4] = h[3]; h[3] = h[2]; h[2] = h[1].rotate_left(13);
                 h[1] = h[0]; h[0] = temp.wrapping_add(maj).rotate_right(3);
-                state[j] = s1;
+                state_data[j] = s1;
             }
         }
 
