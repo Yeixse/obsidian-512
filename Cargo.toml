@@ -1,4 +1,17 @@
 [package]
-name = "hash"
+name = "obsidian-512"
 version = "0.1.0"
-edition = "2024"
+authors = ["<twichozel@gmail.com>"]
+edition = "2021"
+description = "A 128-round hash function for data integrity and non-cryptographic use cases. Experimental."
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+keywords = ["hash", "checksum", "obsidian", "data-integrity"]
+categories = ["algorithms"]
+repository = "https://github.com/Yeixse/Obsidian-512"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"

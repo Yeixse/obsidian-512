@@ -1,1 +1,10 @@
-/target
+/target/
+
+.vscode/
+.idea/
+*.iml
+
+.DS_Store
+Thumbs.db
+
+*.rs.bk
